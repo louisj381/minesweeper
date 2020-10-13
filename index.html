@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Minesweeper</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css">
+  <script src="jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+  <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
+  <script src="long_tap_plugin.js"></script>
+</head>
+
+
+
+<body>
+  <div class="menu">
+    <label for="difficulty">Select difficulty:</label>
+    <select name="difficulty" id="difficulty">
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+    </select>
+    <div class="flag">Flags: <span>10</span></div>
+    <input  type="checkbox" id="sound"/>
+  </div>
+  <div class="gridwrapper">
+    <div class="grid"></div>
+  </div>
+  <div id="overlay">
+    <div id="overlayin">
+    </div>
+  </div>
+  <script>$("#difficulty").selectmenu()</script>
+  <script>$(window).contextmenu((e)=>e.preventDefault())</script>
+  <script src="gameEngine.js"></script>
+</body>
+
+</html>
