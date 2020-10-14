@@ -23,6 +23,7 @@
   <div class="gridwrapper">
     <div class="grid"></div>
   </div>
+  <div id=timeDisplay>The elasped time:  <span id="time">00:00</span></div>
   <div id="overlay">
     <div id="overlayin">
     </div>
