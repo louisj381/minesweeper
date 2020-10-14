@@ -94,11 +94,8 @@ let MSGame = (function(){
         }
         mines[row] = s;
       }
-      console.log("Mines and counts after sprinkling:");
-      console.log(mines.join("\n"), "\n");
     }
     uncover(row, col) {
-      console.log("uncover", row, col);
       // if coordinates invalid, refuse this request
       if( ! this.validCoord(row,col)) return false;
       // if cell is not hidden, ignore this move
@@ -126,15 +123,12 @@ let MSGame = (function(){
       if( this.arr[row][col].mine) {
         this.exploded = true;
       }
-      console.log(this.nuncovered);
       return true;
     }
     mark(row, col) {
-      console.log("mark", row, col);
       // if coordinates invalid, refuse this request
       if( ! this.validCoord(row,col)) return false;
       // if cell already uncovered, refuse this
-      console.log("marking previous state=", this.arr[row][col].state);
       if( this.arr[row][col].state === STATE_SHOWN) return false;
       // accept the move and flip the marked status
       this.nmarked += this.arr[row][col].state == STATE_MARKED ? -1 : 1;
@@ -200,30 +194,32 @@ function generateGrid(game) {
     }
 }
 
+let myTimer;
+
 function updateCallbacks(game) {
     $(".card").click(function() {
         const strs = $(this).attr("id").split('_');
         const canUncover = game.uncover(Number(strs[0].trim()),Number(strs[1].trim()));
         if (canUncover) {
             clickSound.play();
-            console.log(game.arr.count)
             updateFlags(game);
             if (game.exploded) {
                 $(this).css("background-color", "red");
                 $("#overlayin").html('<p class="big glow">You Lost</p><p class="darker">Click anywhere to start a new game.</p>');
                 $('#overlay').toggleClass("active");
+                clearInterval(myTimer);
             }
             else if (game.nuncovered + game.nmines === game.nrows*game.ncols) {
                 $("#overlayin").html('<p class="big glow">Congratulations, you won!!!</p><p class="darker">Click anywhere to start a new game.</p>');
                 $('#overlay').toggleClass("active");
+                clearInterval(myTimer);
             }
         }
     });
-    console.log($(window).height())
     if ($(window).width() < 420) {
         $(".card").on("taphold", function(event) {
             event.preventDefault();
-            console.log($(this))
+            event.stopPropagation();
             const strs = $(this).attr("id").split('_');
             const validSelection = game.mark(strs[0],strs[1]);
             if (validSelection) {
@@ -256,7 +252,6 @@ function updateCallbacks(game) {
         })
     }
     $('#overlay').click(function() {
-        console.log($("#difficulty").selectmenu("menuWidget"))
         if (uiSelection === "Medium") {
             game.init(14, 18, 40);
         }
@@ -267,6 +262,8 @@ function updateCallbacks(game) {
         updateFlags(game);
         updateCallbacks(game);
         $('#overlay').removeClass("active");
+        updateCallbacks(game);
+        myTimer = runTime();
     })
 }
 
@@ -275,6 +272,7 @@ function updateFlags(game) {
 }
 
 let game = new MSGame();
+
 
 $(".menuButton").each( function() {
   $(this).on("click", function(event) {
@@ -287,6 +285,8 @@ $(".menuButton").each( function() {
         generateGrid(game);
         updateFlags(game);
         updateCallbacks(game);
+        clearInterval(myTimer);
+        myTimer = runTime();
     }
     else if (buttonVal === 'Medium') {
       $("#Easy").css("background-color", "rgba(128, 128, 128, 0.233)");
@@ -295,6 +295,8 @@ $(".menuButton").each( function() {
         generateGrid(game);
         updateFlags(game);
         updateCallbacks(game);
+        clearInterval(myTimer);
+        myTimer = runTime();
     }
   })
 });
@@ -313,4 +315,18 @@ $(window).on("throttledresize", () => {
 
 $("#sound").change(function() {
     clickSound.volume = $(this)[0].checked ? 0 : 1;
+});
+
+function runTime() {
+  let sec = 0;
+  $("#time").text("00:00");
+  return setInterval( () => {
+    sec++;
+    let min = parseInt(sec/60); 
+    $("#time").text(`${min >= 10 ? min : "0"+min}:${sec%60 >= 10 ? sec%60 : "0"+sec%60}`);
+  }, 1000)
+}
+
+$(document).ready(function () {
+  myTimer = runTime();
 });

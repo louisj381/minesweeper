@@ -28,8 +28,11 @@ body {
   display: flex;
 }
 
+#timeDisplay {
+  text-align: center;
+}
+
 .card.flipped {
-  /* background-image: url(on.webp); */
   background-color: yellowgreen;
   opacity: 1;
   transform: rotateY(0deg);
