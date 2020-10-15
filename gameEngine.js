@@ -1,5 +1,6 @@
 "use strict";
 
+/* below code for defining MSGame to line 178 created by P. Federl */
 let MSGame = (function(){
 
   // private constants
@@ -263,6 +264,7 @@ function updateCallbacks(game) {
         updateCallbacks(game);
         $('#overlay').removeClass("active");
         updateCallbacks(game);
+        clearInterval(myTimer);
         myTimer = runTime();
     })
 }
